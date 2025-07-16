@@ -29,12 +29,43 @@ if (GDAL_SELECT_VERSION VERSION_GREATER_EQUAL 3.5)
     message(ERROR "Fletch currenly only supports building GDAL Version \"${GDAL_SELECT_VERSION}\" for Linux.")
   else()
     if(fletch_ENABLE_PROJ)
-      set(_GDAL_ARGS_PROJ
+      list(APPEND GDAL_CMAKE_ARGS
         -DPROJ_DIR:PATH=${fletch_BUILD_INSTALL_PREFIX}/lib/cmake/proj
         )
       list(APPEND _GDAL_DEPENDS PROJ)
     else()
       find_package(PROJ REQUIRED)
+    endif()
+
+    if(fletch_ENABLE_PNG)
+      list(APPEND GDAL_CMAKE_ARGS
+        -DPNG_PNG_INCLUDE_DIR:PATH=${fletch_BUILD_INSTALL_PREFIX}/include
+        -DPNG_LIBRARY_RELEASE:FILEPATH=${PNG_LIBRARY}
+        )
+      list(APPEND _GDAL_DEPENDS PNG)
+    endif()
+
+    if(fletch_ENABLE_libtiff)
+      list(APPEND GDAL_CMAKE_ARGS
+        -DTIFF_INCLUDE_DIR:PATH=${fletch_BUILD_INSTALL_PREFIX}/include
+        -DTIFF_LIBRARY_RELEASE:FILEPATH=${TIFF_LIBRARY}
+        )
+      list(APPEND _GDAL_DEPENDS libtiff)
+    endif()
+
+    if(fletch_ENABLE_libgeotiff)
+      list(APPEND GDAL_CMAKE_ARGS
+        -DGeoTIFF_DIR:PATH=${fletch_BUILD_INSTALL_PREFIX}/share/cmake/GeoTIFF
+        )
+      list(APPEND _GDAL_DEPENDS libgeotiff)
+    endif()
+
+    if(fletch_ENABLE_GEOS)
+      list(APPEND GDAL_CMAKE_ARGS
+        -DGEOS_INCLUDE_DIR:PATH=${fletch_BUILD_INSTALL_PREFIX}/include
+        -DGEOS_LIBRARY:FILEPATH=${libgeotiGEOS_C_LIBRARYff_LIBRARY}
+        )
+      list(APPEND _GDAL_DEPENDS GEOS)
     endif()
 
     Fletch_Require_Make()
